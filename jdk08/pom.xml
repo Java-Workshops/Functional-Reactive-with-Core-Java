@@ -64,6 +64,11 @@
     <junit-platform.version>1.1.0</junit-platform.version>
 
     <jacoco.version>0.8.1</jacoco.version>
+
+    <pitest.version>1.3.2</pitest.version>
+    <pitest-junit5-plugin.version>0.4</pitest-junit5-plugin.version>
+    <pitest-prod-classes>org.rapidpm.*</pitest-prod-classes>
+    <pitest-test-classes>junit.org.rapidpm*</pitest-test-classes>
   </properties>
 
   <dependencies>
@@ -108,6 +113,14 @@
       <groupId>org.jacoco</groupId>
       <artifactId>org.jacoco.ant</artifactId>
       <version>${jacoco.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--Mutation testing-->
+    <dependency>
+      <groupId>org.pitest</groupId>
+      <artifactId>pitest</artifactId>
+      <version>${pitest.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -217,7 +230,51 @@
         </executions>
       </plugin>
 
+      <!--Mutation Testing-->
+      <!--Enable mutation testing-->
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>${pitest.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>${pitest-junit5-plugin.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <threads>2</threads>
+          <outputFormats>
+            <outputFormat>XML</outputFormat>
+            <outputFormat>HTML</outputFormat>
+          </outputFormats>
+          <targetClasses>
+            <param>${pitest-prod-classes}</param>
+          </targetClasses>
+          <targetTests>
+            <param>${pitest-test-classes}</param>
+          </targetTests>
+        </configuration>
+      </plugin>
+
+
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>
