@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.rapidpm.event</groupId>
+  <artifactId>rapidpm-functional-reactive-event-jdk11</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+
+
+
+  <inceptionYear>2018</inceptionYear>
+  <organization>
+    <name>Java Workshops - Sven Ruppert</name>
+    <url>https://github.com/Java-Workshops/</url>
+  </organization>
+
+  <url>https://github.com/Java-Workshops/Functional-Reactive-with-Core-Java</url>
+  <name>RapidPM Functional Reactive with Core Java - JDK 11</name>
+  <description>Functional Reactive with Core Java - JDK - 08/09/10/11</description>
+  <scm>
+    <url>https://github.com/Java-Workshops/Functional-Reactive-with-Core-Java</url>
+    <connection>scm:git:https://github.com/Java-Workshops/Functional-Reactive-with-Core-Java.git</connection>
+    <developerConnection>scm:git:https://github.com/Java-Workshops/Functional-Reactive-with-Core-Java.git
+    </developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <developers>
+    <developer>
+      <name>Sven Ruppert</name>
+      <email>sven.ruppert@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/Java-Workshops/Functional-Reactive-with-Core-Java/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <!--<system>DroneCI</system>-->
+    <!--<url>xxx</url>-->
+  </ciManagement>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+      <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+
+  <properties>
+    <!-->
+      <maven.compiler.target>9</maven.compiler.target>
+      <maven.compiler.source>9</maven.compiler.source>
+      -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <dependencies>
+
+  </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <release>11</release>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>6.1</version> <!-- Use newer version of ASM -->
+          </dependency>
+        </dependencies>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
