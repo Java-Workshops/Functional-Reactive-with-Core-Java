@@ -44,12 +44,9 @@ public class FilterCheckBox extends Composite implements HasLogger {
 
   public Registration register(Receiver receiver) {
     registry.add(receiver);
-    return new Registration() {
-      @Override
-      public boolean remove() {
-        logger().warning("Remove Registration .. NOW .. ");
-        return registry.remove(receiver);
-      }
+    return () -> {
+      logger().warning("Remove Registration .. NOW .. ");
+      return registry.remove(receiver);
     };
   }
 
@@ -79,24 +76,21 @@ public class FilterCheckBox extends Composite implements HasLogger {
 
     transform.setCaption("activate filter");
     transform.addClickListener(
-        new Button.ClickListener() {
-          @Override
-          public void buttonClick(Button.ClickEvent event) {
-            logger().info("transform button clicked .. ");
-            //send event with info
-            for (Receiver receiver : registry) {
-              receiver.update(new Info(
-                                  filenames.getSelectedItem()
-                                           .orElseGet(() -> ImageUtils.nextImageName(20)),
-                                  sizePercentage.getSelectedItem()
-                                                .orElse("100%"),
-                                  isFilterEmbossSelected(),
-                                  isFilterGrayscaleSelected(),
-                                  isFilterPointerizeSelected(),
-                                  isFilterRotateSelected()
-                              )
-              );
-            }
+        (Button.ClickListener) event -> {
+          logger().info("transform button clicked .. ");
+          //send event with info
+          for (Receiver receiver : registry) {
+            receiver.update(new Info(
+                                filenames.getSelectedItem()
+                                         .orElseGet(() -> ImageUtils.nextImageName(20)),
+                                sizePercentage.getSelectedItem()
+                                              .orElse("100%"),
+                                isFilterEmbossSelected(),
+                                isFilterGrayscaleSelected(),
+                                isFilterPointerizeSelected(),
+                                isFilterRotateSelected()
+                            )
+            );
           }
         }
     );

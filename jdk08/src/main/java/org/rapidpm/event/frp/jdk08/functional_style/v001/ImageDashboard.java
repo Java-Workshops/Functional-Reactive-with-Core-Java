@@ -34,8 +34,6 @@ public class ImageDashboard extends Composite implements HasLogger {
     setCompositionRoot(layout);
   }
 
-//  private String nextImageName = ImageUtils.nextImageName(20);
-
   private void postConstruct() {
 
     StreamResource streamResource = ImageUtils.imageAsStreamRessouce(ImageUtils.nextImageName(20));
@@ -50,98 +48,84 @@ public class ImageDashboard extends Composite implements HasLogger {
 
     filterCheckBox.setHeight(100f, Unit.PERCENTAGE);
 
-    registration = filterCheckBox.register(new FilterCheckBox.Receiver() {
-      @Override
-      public void update(FilterCheckBox.Info info) {
-        layoutResults.removeAllComponents();
+    registration = filterCheckBox.register(info -> {
+      layoutResults.removeAllComponents();
 
-        //process all steps.... -> write REAMDE.md
-
-        // tumbnail -> emboss
-        // tumbnail -> grayscale -> pointerize
-        // tumbnail -> grayscale -> rotate
-
-        byte[] bytes             = ImageUtils.readImageWithIdAsBytes(info.getFilename());
-        byte[] resizedImageBytes = new byte[0];
-        byte[] embossImageBytes  = new byte[0];
-        byte[] grayImageBytes    = new byte[0];
-        byte[] pointsImageBytes  = new byte[0];
-        byte[] rotatedImageBytes = new byte[0];
+      byte[] bytes             = ImageUtils.readImageWithIdAsBytes(info.getFilename());
+      byte[] resizedImageBytes = new byte[0];
+      byte[] embossImageBytes  = new byte[0];
+      byte[] grayImageBytes    = new byte[0];
+      byte[] pointsImageBytes  = new byte[0];
+      byte[] rotatedImageBytes = new byte[0];
 
 
-        StreamResource streamResource = ImageUtils.imageAsStreamRessouce(info.getFilename());
-        streamResource.setCacheTime(0);
-        image.setStreamRessoure(streamResource);
+      StreamResource streamResource1 = ImageUtils.imageAsStreamRessouce(info.getFilename());
+      streamResource1.setCacheTime(0);
+      image.setStreamRessoure(streamResource1);
 
 
-        final ResizeFilter resizeFilter = new ResizeFilter();
-        resizeFilter.setPercentage(info.getSize()
-                                       .replace("%",
-                                                ""
-                                       ));
-        resizedImageBytes = resizeFilter.workOn(bytes);
-        final ImagePanel imagePanelResized = createImagePanel(resizedImageBytes, "thumbnail");
-        layoutResults.addComponent(imagePanelResized);
+      final ResizeFilter resizeFilter = new ResizeFilter();
+      resizeFilter.setPercentage(info.getSize()
+                                     .replace("%",
+                                              ""
+                                     ));
+      resizedImageBytes = resizeFilter.workOn(bytes);
+      final ImagePanel imagePanelResized = createImagePanel(resizedImageBytes, "thumbnail");
+      layoutResults.addComponent(imagePanelResized);
 
 
-        // emboss
-        if (info.getFilterEmboss()) {
-          EmbossFilter embossFilter = new EmbossFilter();
-          embossImageBytes = embossFilter.workOn(resizedImageBytes);
-          final ImagePanel imagePanelEmboss = createImagePanel(embossImageBytes, "emboss");
-          layoutResults.addComponent(imagePanelEmboss);
-        }
+      // emboss
+      if (info.getFilterEmboss()) {
+        EmbossFilter embossFilter = new EmbossFilter();
+        embossImageBytes = embossFilter.workOn(resizedImageBytes);
+        final ImagePanel imagePanelEmboss = createImagePanel(embossImageBytes, "emboss");
+        layoutResults.addComponent(imagePanelEmboss);
+      }
 
-        // grayscale
+      // grayscale
+      if (info.getFilterGrayscale()) {
+        final GrayScaleFilter grayScaleFilter = new GrayScaleFilter();
+        grayImageBytes = grayScaleFilter.workOn(resizedImageBytes);
+        final ImagePanel imagePanelGrayscale = createImagePanel(grayImageBytes, "grayscale");
+        layoutResults.addComponent(imagePanelGrayscale);
+      }
+
+      //points
+      if (info.getFilterPointerize()) {
+        PointsFilter pointsFilter = new PointsFilter();
+        pointsImageBytes = pointsFilter.workOn((info.getFilterGrayscale()) ? grayImageBytes : resizedImageBytes);
+        final ImagePanel imagePanelPoints = createImagePanel(pointsImageBytes, "points");
+        layoutResults.addComponent(imagePanelPoints);
+      }
+
+      // rotate
+
+      if (info.getFilterRotate()) {
+        byte[] toUse;
         if (info.getFilterGrayscale()) {
-          final GrayScaleFilter grayScaleFilter = new GrayScaleFilter();
-          grayImageBytes = grayScaleFilter.workOn(resizedImageBytes);
-          final ImagePanel imagePanelGrayscale = createImagePanel(grayImageBytes, "grayscale");
-          layoutResults.addComponent(imagePanelGrayscale);
-        }
-
-        //points
-        if (info.getFilterPointerize()) {
-          PointsFilter pointsFilter = new PointsFilter();
-          pointsImageBytes = pointsFilter.workOn((info.getFilterGrayscale()) ? grayImageBytes : resizedImageBytes);
-          final ImagePanel imagePanelPoints = createImagePanel(pointsImageBytes, "points");
-          layoutResults.addComponent(imagePanelPoints);
-        }
-
-        // rotate
-
-        if (info.getFilterRotate()) {
-          byte[] toUse;
-          if (info.getFilterGrayscale()) {
-            if (info.getFilterPointerize()) {
-              toUse = pointsImageBytes;
-            } else {
-              toUse = grayImageBytes;
-            }
+          if (info.getFilterPointerize()) {
+            toUse = pointsImageBytes;
           } else {
-            if (info.getFilterPointerize()) {
-              toUse = pointsImageBytes;
-            } else {
-              toUse = resizedImageBytes;
-            }
+            toUse = grayImageBytes;
           }
-          Rotate45DegreeFilter rotate45DegreeFilter = new Rotate45DegreeFilter();
-          rotatedImageBytes = rotate45DegreeFilter.workOn(toUse);
-          final ImagePanel imagePanelRotated = createImagePanel(rotatedImageBytes, "rotated");
-          layoutResults.addComponent(imagePanelRotated);
+        } else {
+          if (info.getFilterPointerize()) {
+            toUse = pointsImageBytes;
+          } else {
+            toUse = resizedImageBytes;
+          }
         }
+        Rotate45DegreeFilter rotate45DegreeFilter = new Rotate45DegreeFilter();
+        rotatedImageBytes = rotate45DegreeFilter.workOn(toUse);
+        final ImagePanel imagePanelRotated = createImagePanel(rotatedImageBytes, "rotated");
+        layoutResults.addComponent(imagePanelRotated);
       }
     });
   }
 
   private ImagePanel createImagePanel(byte[] input, String name) {
     final StreamResource streamResourceThumb = new StreamResource(
-        new StreamResource.StreamSource() {
-          @Override
-          public InputStream getStream() {
-            return new ByteArrayInputStream(input);
-          }
-        },
+        (StreamResource.StreamSource) () -> new ByteArrayInputStream(input),
         name + " - thumb"
     );
     streamResourceThumb.setCacheTime(0);

@@ -88,12 +88,7 @@ public class ImageUtils {
   static StreamResource imageAsStreamRessouce(String nextImageName) {
     byte[] bytes = ImageUtils.readImageWithIdAsBytes(nextImageName);
     final StreamResource streamResource = new StreamResource(
-        new StreamResource.StreamSource() {
-          @Override
-          public InputStream getStream() {
-            return new ByteArrayInputStream(bytes);
-          }
-        },
+        (StreamResource.StreamSource) () -> new ByteArrayInputStream(bytes),
         nextImageName
     );
     return streamResource;
