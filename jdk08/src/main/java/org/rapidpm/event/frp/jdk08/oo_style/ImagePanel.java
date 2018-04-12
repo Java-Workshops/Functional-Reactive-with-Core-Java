@@ -21,9 +21,4 @@ public class ImagePanel extends Composite {
     image.setSource(streamRessoure);
     panel.setCaption(streamRessoure.getFilename());
   }
-
-  public float getImageHeight() {
-    return image.getHeight();
-  }
-
 }
