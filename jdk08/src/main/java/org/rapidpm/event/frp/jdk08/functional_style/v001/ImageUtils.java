@@ -2,10 +2,10 @@ package org.rapidpm.event.frp.jdk08.functional_style.v001;
 
 import com.vaadin.server.StreamResource;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static java.lang.String.format;
 import static java.nio.file.Files.readAllBytes;
@@ -39,16 +39,10 @@ public class ImageUtils {
           ).toPath()
       );
     } catch (IOException e) {
-      //logger().warning(e);
-      try {
-        allBytes = ImageUtils.failedImage(nextImageName);
-      } catch (IOException e1) {
-        //logger().warning(e1);
-        allBytes = new byte[0];
-      }
+      allBytes = ImageFunctions.failedImage().apply(nextImageName);
     }
     return allBytes;
-  }
+}
 
   static InputStream readImageWithIdAsStream(String nextImageName) {
     byte[]                     allBytes    = readImageWithIdAsBytes(nextImageName);
@@ -57,33 +51,33 @@ public class ImageUtils {
   }
 
 
-  static byte[] failedImage(String imageID) throws IOException {
-    BufferedImage image = new BufferedImage(512, 512,
-                                            BufferedImage.TYPE_INT_RGB
-    );
-    Graphics2D drawable = image.createGraphics();
-    drawable.setStroke(new BasicStroke(5));
-    drawable.setColor(Color.WHITE);
-    drawable.fillRect(0, 0, 512, 512);
-    drawable.setColor(Color.BLACK);
-    drawable.drawOval(50, 50, 300, 300);
+//  static byte[] failedImage(String imageID) throws IOException {
+//    BufferedImage image = new BufferedImage(512, 512,
+//                                            BufferedImage.TYPE_INT_RGB
+//    );
+//    Graphics2D drawable = image.createGraphics();
+//    drawable.setStroke(new BasicStroke(5));
+//    drawable.setColor(Color.WHITE);
+//    drawable.fillRect(0, 0, 512, 512);
+//    drawable.setColor(Color.BLACK);
+//    drawable.drawOval(50, 50, 300, 300);
+//
+//    drawable.setFont(new Font("Montserrat", Font.PLAIN, 20));
+//    drawable.drawString(imageID, 75, 216);
+//    drawable.setColor(new Color(0, 165, 235));
+//    // Write the image to a buffer
+//    ByteArrayOutputStream imagebuffer = new ByteArrayOutputStream();
+//    ImageIO.write(image, "jpg", imagebuffer);
+//
+//    // Return a stream from the buffer
+//    return imagebuffer.toByteArray();
+//  }
 
-    drawable.setFont(new Font("Montserrat", Font.PLAIN, 20));
-    drawable.drawString(imageID, 75, 216);
-    drawable.setColor(new Color(0, 165, 235));
-    // Write the image to a buffer
-    ByteArrayOutputStream imagebuffer = new ByteArrayOutputStream();
-    ImageIO.write(image, "jpg", imagebuffer);
-
-    // Return a stream from the buffer
-    return imagebuffer.toByteArray();
-  }
-
-  static InputStream failedImageAsInputStream(String imageID) throws IOException {
-    byte[]                     failedImage = failedImage(imageID);
-    final ByteArrayInputStream baos        = new ByteArrayInputStream(failedImage);
-    return baos;
-  }
+//  static InputStream failedImageAsInputStream(String imageID) throws IOException {
+//    byte[]                     failedImage = failedImage(imageID);
+//    final ByteArrayInputStream baos        = new ByteArrayInputStream(failedImage);
+//    return baos;
+//  }
 
   static StreamResource imageAsStreamRessouce(String nextImageName) {
     byte[] bytes = ImageUtils.readImageWithIdAsBytes(nextImageName);
