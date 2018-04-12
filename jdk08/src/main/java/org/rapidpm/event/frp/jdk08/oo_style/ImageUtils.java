@@ -14,12 +14,20 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 public class ImageUtils {
 
 
+  static String fileName(int id){
+    return format("%04d", id)+ "_1024px.jpg";
+  }
+
+  static String fileName(String id){
+    return id + "_1024px.jpg";
+  }
+
   static String randomImageID(int boundary) {
-    return format("%05d", current().nextInt(boundary) + 1);
+    return format("%04d", current().nextInt(boundary) + 1);
   }
 
   static String nextImageName(int boundary) {
-    return "nasa_pic_" + randomImageID(boundary) + ".jpg";
+    return fileName(randomImageID(boundary) );
   }
 
   static byte[] readImageWithIdAsBytes(String nextImageName) {
@@ -27,7 +35,8 @@ public class ImageUtils {
     try {
       allBytes = readAllBytes(
           new File("./",
-                   "_data/_images/_nasa_pics/_0512px/" + nextImageName
+//                   "_data/_images/_nasa_pics/_0512px/" + nextImageName
+                   "_data/_images/_jpeg/_1024px/" + nextImageName
           ).toPath()
       );
     } catch (IOException e) {

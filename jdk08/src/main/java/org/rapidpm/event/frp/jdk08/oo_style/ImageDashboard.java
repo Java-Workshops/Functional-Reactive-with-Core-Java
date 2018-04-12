@@ -1,10 +1,8 @@
 package org.rapidpm.event.frp.jdk08.oo_style;
 
 import com.vaadin.server.StreamResource;
-import com.vaadin.ui.Composite;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
 import org.rapidpm.dependencies.core.logger.HasLogger;
 import org.rapidpm.event.frp.jdk08.oo_style.filter.emboss.EmbossFilter;
 import org.rapidpm.event.frp.jdk08.oo_style.filter.gray.GrayScaleFilter;
@@ -24,8 +22,9 @@ public class ImageDashboard extends Composite implements HasLogger {
                                                                image
   );
   private Layout         layoutResults  = new HorizontalLayout();
+  private Panel          panelResults   = new Panel(layoutResults);
   private Layout         layout         = new VerticalLayout(layoutOrig,
-                                                             layoutResults
+                                                             panelResults
   );
 
   public ImageDashboard() {
@@ -36,15 +35,19 @@ public class ImageDashboard extends Composite implements HasLogger {
 
   private FilterCheckBox.Registration registration;
 
-  private String nextImageName = ImageUtils.nextImageName(100);
+//  private String nextImageName = ImageUtils.nextImageName(20);
 
   private void postConstruct() {
 
-    StreamResource streamResource = ImageUtils.imageAsStreamRessouce(nextImageName);
+    StreamResource streamResource = ImageUtils.imageAsStreamRessouce(ImageUtils.nextImageName(20));
     streamResource.setCacheTime(0);
     image.setStreamRessoure(streamResource);
 
     ((HorizontalLayout) layoutOrig).setExpandRatio(image, 1);
+
+    panelResults.setCaption("Results");
+    panelResults.setWidth(100, Unit.PERCENTAGE );
+    panelResults.addStyleName(ValoTheme.PANEL_SCROLL_INDICATOR);
 
     filterCheckBox.setHeight(100f, Unit.PERCENTAGE);
 
@@ -59,13 +62,18 @@ public class ImageDashboard extends Composite implements HasLogger {
         // tumbnail -> grayscale -> pointerize
         // tumbnail -> grayscale -> rotate
 
-
-        byte[] bytes             = ImageUtils.readImageWithIdAsBytes(nextImageName);
+        byte[] bytes             = ImageUtils.readImageWithIdAsBytes(info.getFilename());
         byte[] resizedImageBytes = new byte[0];
         byte[] embossImageBytes  = new byte[0];
         byte[] grayImageBytes    = new byte[0];
         byte[] pointsImageBytes  = new byte[0];
         byte[] rotatedImageBytes = new byte[0];
+
+
+        StreamResource streamResource = ImageUtils.imageAsStreamRessouce(info.getFilename());
+        streamResource.setCacheTime(0);
+        image.setStreamRessoure(streamResource);
+
 
         final ResizeFilter resizeFilter = new ResizeFilter();
         resizeFilter.setPercentage(info.getSize()
@@ -135,7 +143,7 @@ public class ImageDashboard extends Composite implements HasLogger {
             return new ByteArrayInputStream(input);
           }
         },
-        nextImageName + " - thumb"
+        name + " - thumb"
     );
     streamResourceThumb.setCacheTime(0);
 
