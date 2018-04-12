@@ -11,7 +11,6 @@ import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.resize.ResizeFil
 import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.rotate.Rotate45DegreeFilter;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 
 public class ImageDashboard extends Composite implements HasLogger {

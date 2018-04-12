@@ -3,7 +3,6 @@ package org.rapidpm.event.frp.jdk08.functional_style.v001;
 import com.vaadin.ui.*;
 import org.rapidpm.dependencies.core.logger.HasLogger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
