@@ -6,6 +6,8 @@ import org.rapidpm.dependencies.core.logger.HasLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.concurrent.ConcurrentHashMap.newKeySet;
 
@@ -34,7 +36,7 @@ public class FilterCheckBox extends Composite implements HasLogger {
                                                            transform
   );
 
-  private Panel panel = new Panel(layout);
+  private Panel         panel    = new Panel(layout);
   private Set<Receiver> registry = newKeySet();
 
   public FilterCheckBox() {
@@ -54,10 +56,11 @@ public class FilterCheckBox extends Composite implements HasLogger {
 
     panel.setCaption("Filter Tool Box");
 
-    List<String> filenameList = new ArrayList<>();
-    for (int i = 1; i < 23; i++) {
-      filenameList.add(ImageUtils.fileName(i));
-    }
+    List<String> filenameList = IntStream
+        .rangeClosed(1,23 )
+        .mapToObj(ImageUtils::fileName)
+        .collect(Collectors.toList());
+
     filenames.setItems(filenameList);
     filenames.setPlaceholder("select filename");
 
@@ -79,19 +82,19 @@ public class FilterCheckBox extends Composite implements HasLogger {
         (Button.ClickListener) event -> {
           logger().info("transform button clicked .. ");
           //send event with info
-          for (Receiver receiver : registry) {
-            receiver.update(new Info(
-                                filenames.getSelectedItem()
-                                         .orElseGet(() -> ImageUtils.nextImageName(20)),
-                                sizePercentage.getSelectedItem()
-                                              .orElse("100%"),
-                                isFilterEmbossSelected(),
-                                isFilterGrayscaleSelected(),
-                                isFilterPointerizeSelected(),
-                                isFilterRotateSelected()
-                            )
-            );
-          }
+          registry
+              .forEach(receiver -> receiver
+                  .update(new Info(
+                              filenames.getSelectedItem()
+                                       .orElseGet(() -> ImageUtils.nextImageName(20)),
+                              sizePercentage.getSelectedItem()
+                                            .orElse("100%"),
+                              isFilterEmbossSelected(),
+                              isFilterGrayscaleSelected(),
+                              isFilterPointerizeSelected(),
+                              isFilterRotateSelected()
+                          )
+                  ));
         }
     );
 
