@@ -1,6 +1,5 @@
 package org.rapidpm.event.frp.jdk08.oo_style.filter.emboss;
 
-import org.apache.commons.imaging.ImageReadException;
 import org.rapidpm.event.frp.jdk08.oo_style.filter.Filter;
 
 import javax.imageio.ImageIO;
@@ -14,7 +13,6 @@ public class EmbossFilter implements Filter {
   public byte[] workOn(byte[] input) {
 
     try {
-//      final BufferedImage image = Imaging.getBufferedImage(input);
       final BufferedImage image = ImageIO.read(new ByteArrayInputStream(input));
 
       com.jhlabs.image.EmbossFilter filter = new com.jhlabs.image.EmbossFilter();

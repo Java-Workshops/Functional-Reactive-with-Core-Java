@@ -26,14 +26,13 @@ public class ImageDashboard extends Composite implements HasLogger {
   private Layout         layout         = new VerticalLayout(layoutOrig,
                                                              panelResults
   );
+  private FilterCheckBox.Registration registration;
 
   public ImageDashboard() {
     logger().warning("ImageDashboard will be created...");
     postConstruct();
     setCompositionRoot(layout);
   }
-
-  private FilterCheckBox.Registration registration;
 
 //  private String nextImageName = ImageUtils.nextImageName(20);
 
@@ -46,7 +45,7 @@ public class ImageDashboard extends Composite implements HasLogger {
     ((HorizontalLayout) layoutOrig).setExpandRatio(image, 1);
 
     panelResults.setCaption("Results");
-    panelResults.setWidth(100, Unit.PERCENTAGE );
+    panelResults.setWidth(100, Unit.PERCENTAGE);
     panelResults.addStyleName(ValoTheme.PANEL_SCROLL_INDICATOR);
 
     filterCheckBox.setHeight(100f, Unit.PERCENTAGE);
@@ -111,18 +110,18 @@ public class ImageDashboard extends Composite implements HasLogger {
 
         // rotate
 
-        if(info.getFilterRotate()){
+        if (info.getFilterRotate()) {
           byte[] toUse;
-          if(info.getFilterGrayscale()){
-            if(info.getFilterPointerize()){
+          if (info.getFilterGrayscale()) {
+            if (info.getFilterPointerize()) {
               toUse = pointsImageBytes;
-            } else{
+            } else {
               toUse = grayImageBytes;
             }
           } else {
-            if(info.getFilterPointerize()){
+            if (info.getFilterPointerize()) {
               toUse = pointsImageBytes;
-            } else{
+            } else {
               toUse = resizedImageBytes;
             }
           }

@@ -15,7 +15,6 @@ import org.rapidpm.dependencies.core.logger.HasLogger;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-
 import java.util.Optional;
 
 import static io.undertow.Handlers.path;

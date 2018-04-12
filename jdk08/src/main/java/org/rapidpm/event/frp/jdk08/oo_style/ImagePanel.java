@@ -16,13 +16,13 @@ public class ImagePanel extends Composite {
     setCompositionRoot(panel);
   }
 
-  public void setStreamRessoure(StreamResource streamRessoure){
+  public void setStreamRessoure(StreamResource streamRessoure) {
     Objects.requireNonNull(streamRessoure);
     image.setSource(streamRessoure);
     panel.setCaption(streamRessoure.getFilename());
   }
 
-  public float getImageHeight(){
+  public float getImageHeight() {
     return image.getHeight();
   }
 

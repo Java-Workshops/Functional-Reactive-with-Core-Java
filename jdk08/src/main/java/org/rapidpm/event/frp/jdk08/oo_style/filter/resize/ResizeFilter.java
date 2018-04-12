@@ -1,8 +1,6 @@
 package org.rapidpm.event.frp.jdk08.oo_style.filter.resize;
 
 import com.jhlabs.image.ScaleFilter;
-import org.apache.commons.imaging.ImageReadException;
-import org.apache.commons.imaging.Imaging;
 import org.rapidpm.event.frp.jdk08.oo_style.filter.Filter;
 
 import javax.imageio.ImageIO;
@@ -16,7 +14,7 @@ public class ResizeFilter implements Filter {
 
   private String percentage;
 
-  private double percentage(String percentage){
+  private double percentage(String percentage) {
     return (percentage.equals("100"))
            ? 1
            : (percentage.equals("50"))
@@ -31,7 +29,7 @@ public class ResizeFilter implements Filter {
     try {
 //      final BufferedImage image = Imaging.getBufferedImage(input);
       final BufferedImage image = ImageIO.read(new ByteArrayInputStream(input));
-      double p = percentage(percentage);
+      double              p     = percentage(percentage);
 
       final ScaleFilter filter = new ScaleFilter((int) (image.getWidth() * p),
                                                  (int) (image.getHeight() * p)

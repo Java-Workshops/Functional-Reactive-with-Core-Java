@@ -1,6 +1,5 @@
 package org.rapidpm.event.frp.jdk08.oo_style;
 
-import com.vaadin.data.HasValue;
 import com.vaadin.ui.*;
 import org.rapidpm.dependencies.core.logger.HasLogger;
 
@@ -36,65 +35,12 @@ public class FilterCheckBox extends Composite implements HasLogger {
   );
 
   private Panel panel = new Panel(layout);
-
-  public static class Info {
-
-    private String  filename;
-    private String  size;
-    private Boolean filterEmboss;
-    private Boolean filterGrayscale;
-    private Boolean filterPointerize;
-    private Boolean filterRotate;
-
-    public Info(
-        String filename,
-        String size,
-        Boolean filterEmboss,
-        Boolean filterGrayscale,
-        Boolean filterPointerize,
-        Boolean filterRotate) {
-      this.filename = filename;
-      this.size = size;
-      this.filterEmboss = filterEmboss;
-      this.filterGrayscale = filterGrayscale;
-      this.filterPointerize = filterPointerize;
-      this.filterRotate = filterRotate;
-    }
-
-    public String getFilename() {
-      return filename;
-    }
-
-    public String getSize() {
-      return size;
-    }
-
-    public Boolean getFilterEmboss() {
-      return filterEmboss;
-    }
-
-    public Boolean getFilterGrayscale() {
-      return filterGrayscale;
-    }
-
-    public Boolean getFilterPointerize() {
-      return filterPointerize;
-    }
-
-    public Boolean getFilterRotate() {
-      return filterRotate;
-    }
-  }
-
-  public interface Receiver {
-    void update(Info info);
-  }
-
-  public interface Registration {
-    boolean remove();
-  }
-
   private Set<Receiver> registry = newKeySet();
+
+  public FilterCheckBox() {
+    postConstruct();
+    setCompositionRoot(panel);
+  }
 
   public Registration register(Receiver receiver) {
     registry.add(receiver);
@@ -106,13 +52,6 @@ public class FilterCheckBox extends Composite implements HasLogger {
       }
     };
   }
-
-
-  public FilterCheckBox() {
-    postConstruct();
-    setCompositionRoot(panel);
-  }
-
 
   private void postConstruct() {
 
@@ -172,5 +111,62 @@ public class FilterCheckBox extends Composite implements HasLogger {
   public Boolean isFilterPointerizeSelected() { return filterPointerize.getValue(); }
 
   public Boolean isFilterRotateSelected() { return filterRotate.getValue(); }
+
+  public interface Receiver {
+    void update(Info info);
+  }
+
+  public interface Registration {
+    boolean remove();
+  }
+
+  public static class Info {
+
+    private String  filename;
+    private String  size;
+    private Boolean filterEmboss;
+    private Boolean filterGrayscale;
+    private Boolean filterPointerize;
+    private Boolean filterRotate;
+
+    public Info(
+        String filename,
+        String size,
+        Boolean filterEmboss,
+        Boolean filterGrayscale,
+        Boolean filterPointerize,
+        Boolean filterRotate) {
+      this.filename = filename;
+      this.size = size;
+      this.filterEmboss = filterEmboss;
+      this.filterGrayscale = filterGrayscale;
+      this.filterPointerize = filterPointerize;
+      this.filterRotate = filterRotate;
+    }
+
+    public String getFilename() {
+      return filename;
+    }
+
+    public String getSize() {
+      return size;
+    }
+
+    public Boolean getFilterEmboss() {
+      return filterEmboss;
+    }
+
+    public Boolean getFilterGrayscale() {
+      return filterGrayscale;
+    }
+
+    public Boolean getFilterPointerize() {
+      return filterPointerize;
+    }
+
+    public Boolean getFilterRotate() {
+      return filterRotate;
+    }
+  }
 
 }
