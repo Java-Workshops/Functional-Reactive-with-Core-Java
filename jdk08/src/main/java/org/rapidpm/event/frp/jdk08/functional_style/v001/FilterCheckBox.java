@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.ConcurrentHashMap.newKeySet;
+import static org.rapidpm.event.frp.jdk08.functional_style.v001.ImageFunctions.*;
 
 // tumbnail -> emboss
 // tumbnail -> grayscale -> pointerize
@@ -57,7 +58,7 @@ public class FilterCheckBox extends Composite implements HasLogger {
 
     List<String> filenameList = IntStream
         .rangeClosed(1,23 )
-        .mapToObj(ImageUtils::fileName)
+        .mapToObj(id -> formatID().andThen(filename()).apply(id))
         .collect(Collectors.toList());
 
     filenames.setItems(filenameList);
@@ -85,7 +86,7 @@ public class FilterCheckBox extends Composite implements HasLogger {
               .forEach(receiver -> receiver
                   .update(new Info(
                               filenames.getSelectedItem()
-                                       .orElseGet(() -> ImageUtils.nextImageName(20)),
+                                       .orElseGet(() -> nextImageName().apply(20)),
                               sizePercentage.getSelectedItem()
                                             .orElse("100%"),
                               isFilterEmbossSelected(),

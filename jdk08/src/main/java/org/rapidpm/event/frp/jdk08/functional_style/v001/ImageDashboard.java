@@ -12,18 +12,20 @@ import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.rotate.Rotate45D
 
 import java.io.ByteArrayInputStream;
 
+import static org.rapidpm.event.frp.jdk08.functional_style.v001.ImageFunctions.*;
+
 
 public class ImageDashboard extends Composite implements HasLogger {
 
   private FilterCheckBox              filterCheckBox = new FilterCheckBox();
   private ImagePanel                  image          = new ImagePanel();
   private Layout                      layoutOrig     = new HorizontalLayout(filterCheckBox,
-                                                               image
+                                                                            image
   );
   private Layout                      layoutResults  = new HorizontalLayout();
   private Panel                       panelResults   = new Panel(layoutResults);
   private Layout                      layout         = new VerticalLayout(layoutOrig,
-                                                             panelResults
+                                                                          panelResults
   );
   private FilterCheckBox.Registration registration;
 
@@ -35,7 +37,10 @@ public class ImageDashboard extends Composite implements HasLogger {
 
   private void postConstruct() {
 
-    StreamResource streamResource = ImageUtils.imageAsStreamRessouce(ImageUtils.nextImageName(20));
+    StreamResource streamResource = nextImageName()
+        .andThen(imageAsStreamRessouce())
+        .apply(23);
+
     streamResource.setCacheTime(0);
     image.setStreamRessoure(streamResource);
 
@@ -50,7 +55,7 @@ public class ImageDashboard extends Composite implements HasLogger {
     registration = filterCheckBox.register(info -> {
       layoutResults.removeAllComponents();
 
-      byte[] bytes             = ImageUtils.readImageWithIdAsBytes(info.getFilename());
+      byte[] bytes             = readImageWithIdAsBytes().apply(info.getFilename());
       byte[] resizedImageBytes = new byte[0];
       byte[] embossImageBytes  = new byte[0];
       byte[] grayImageBytes    = new byte[0];
@@ -58,7 +63,7 @@ public class ImageDashboard extends Composite implements HasLogger {
       byte[] rotatedImageBytes = new byte[0];
 
 
-      StreamResource streamResource1 = ImageUtils.imageAsStreamRessouce(info.getFilename());
+      StreamResource streamResource1 = imageAsStreamRessouce().apply(info.getFilename());
       streamResource1.setCacheTime(0);
       image.setStreamRessoure(streamResource1);
 

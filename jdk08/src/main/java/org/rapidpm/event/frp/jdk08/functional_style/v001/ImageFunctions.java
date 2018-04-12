@@ -1,13 +1,62 @@
 package org.rapidpm.event.frp.jdk08.functional_style.v001;
 
+import com.vaadin.server.StreamResource;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.function.Function;
 
+import static java.lang.String.format;
+import static java.nio.file.Files.readAllBytes;
+import static java.util.concurrent.ThreadLocalRandom.current;
+
 public interface ImageFunctions {
+
+
+  static Function<String, StreamResource> imageAsStreamRessouce() {
+    return (nextImageName) -> readImageWithIdAsBytes()
+        .andThen(bytes -> new StreamResource(
+            (StreamResource.StreamSource) () -> new ByteArrayInputStream(bytes),
+            nextImageName))
+        .apply(nextImageName);
+  }
+
+  static Function<String, byte[]> readImageWithIdAsBytes() {
+    return (nextImageName) -> {
+      try {
+        return readAllBytes(
+            new File("./",
+                     "_data/_images/_jpeg/_1024px/" + nextImageName
+            ).toPath()
+        );
+      } catch (IOException e) {
+        return failedImage().apply(nextImageName);
+      }
+    };
+  }
+
+  static Function<Integer, String> nextImageName() {
+    return (boundary) -> randomImageID()
+        .andThen(filename())
+        .apply(boundary);
+  }
+
+  static Function<Integer, String> randomImageID() {
+    return (boundary) -> formatID().apply(current().nextInt(boundary) + 1);
+  }
+
+  static Function<Integer, String> formatID(){
+    return (id)-> format("%04d", id);
+  }
+
+  static Function<String, String> filename() {
+    return (id) -> id + "_1024px.jpg";
+  }
 
 
   static Function<String, byte[]> failedImage() {
