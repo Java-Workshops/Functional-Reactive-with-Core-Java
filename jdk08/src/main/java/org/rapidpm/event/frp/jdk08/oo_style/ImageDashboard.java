@@ -34,8 +34,6 @@ public class ImageDashboard extends Composite implements HasLogger {
     setCompositionRoot(layout);
   }
 
-//  private String nextImageName = ImageUtils.nextImageName(20);
-
   private void postConstruct() {
 
     StreamResource streamResource = ImageUtils.imageAsStreamRessouce(ImageUtils.nextImageName(20));
