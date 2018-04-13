@@ -6,6 +6,9 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Panel;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
+
+import static org.rapidpm.event.frp.jdk08.functional_style.v001.ImageFunctions.toStreamResource;
 
 public class ImagePanel extends Composite {
 
@@ -20,6 +23,18 @@ public class ImagePanel extends Composite {
     Objects.requireNonNull(streamRessoure);
     image.setSource(streamRessoure);
     panel.setCaption(streamRessoure.getFilename());
+  }
+
+
+  public static BiFunction<byte[], String, ImagePanel> imagePanel() {
+    return (image, name) -> {
+      StreamResource streamResource = toStreamResource().apply(image, name);
+      streamResource.setCacheTime(0);
+      final ImagePanel imagePanel = new ImagePanel();
+      imagePanel.setCaption(name);
+      imagePanel.setStreamRessoure(streamResource);
+      return imagePanel;
+    };
   }
 
 }

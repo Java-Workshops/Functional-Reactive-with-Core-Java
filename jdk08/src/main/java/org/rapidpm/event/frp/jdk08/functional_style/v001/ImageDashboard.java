@@ -5,10 +5,9 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.rapidpm.dependencies.core.logger.HasLogger;
 
-import java.util.function.BiFunction;
-
 import static org.rapidpm.event.frp.jdk08.functional_style.v001.FilterFunctions.*;
 import static org.rapidpm.event.frp.jdk08.functional_style.v001.ImageFunctions.*;
+import static org.rapidpm.event.frp.jdk08.functional_style.v001.ImagePanel.imagePanel;
 
 
 public class ImageDashboard extends Composite implements HasLogger {
@@ -128,16 +127,6 @@ public class ImageDashboard extends Composite implements HasLogger {
     });
   }
 
-  private BiFunction<byte[], String, ImagePanel> imagePanel() {
-    return (image, name) -> {
-      StreamResource streamResource = toStreamResource().apply(image, name);
-      streamResource.setCacheTime(0);
-      final ImagePanel imagePanel = new ImagePanel();
-      imagePanel.setCaption(name);
-      imagePanel.setStreamRessoure(streamResource);
-      return imagePanel;
-    };
-  }
 
 
   @Override
