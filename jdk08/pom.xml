@@ -72,6 +72,7 @@
     <vaadin.version>8.3.3</vaadin.version>
     <rapidpm-dependencies.version>3.5.8</rapidpm-dependencies.version>
     <undertow.version>2.0.4.Final</undertow.version>
+    <rapidpm-functional-reactive.version>0.5.2</rapidpm-functional-reactive.version>
   </properties>
 
   <dependencyManagement>
@@ -94,6 +95,11 @@
       <groupId>org.rapidpm</groupId>
       <artifactId>rapidpm-dependencies-core-logger</artifactId>
       <version>${rapidpm-dependencies.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rapidpm</groupId>
+      <artifactId>rapidpm-functional-reactive</artifactId>
+      <version>${rapidpm-functional-reactive.version}</version>
     </dependency>
 
     <!--Infrastructure-->
