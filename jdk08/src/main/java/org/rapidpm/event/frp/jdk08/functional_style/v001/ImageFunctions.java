@@ -22,7 +22,8 @@ public interface ImageFunctions {
     return (nextImageName) -> readImageWithIdAsBytes()
         .andThen(bytes -> new StreamResource(
             (StreamResource.StreamSource) () -> new ByteArrayInputStream(bytes),
-            nextImageName))
+            nextImageName
+        ))
         .apply(nextImageName);
   }
 
@@ -50,8 +51,8 @@ public interface ImageFunctions {
     return (boundary) -> formatID().apply(current().nextInt(boundary) + 1);
   }
 
-  static Function<Integer, String> formatID(){
-    return (id)-> format("%04d", id);
+  static Function<Integer, String> formatID() {
+    return (id) -> format("%04d", id);
   }
 
   static Function<String, String> filename() {
@@ -59,8 +60,8 @@ public interface ImageFunctions {
   }
 
 
-  static Function<String, byte[]> failedImage() {
-    return (imageID) -> {
+  static Function<String, BufferedImage> failedBufferedImage() {
+    return (txt) -> {
       BufferedImage image = new BufferedImage(512, 512,
                                               BufferedImage.TYPE_INT_RGB
       );
@@ -72,13 +73,20 @@ public interface ImageFunctions {
       drawable.drawOval(50, 50, 300, 300);
 
       drawable.setFont(new Font("Montserrat", Font.PLAIN, 20));
-      drawable.drawString(imageID, 75, 216);
+      drawable.drawString(txt, 75, 216);
       drawable.setColor(new Color(0, 165, 235));
+      return image;
+    };
+  }
+
+  static Function<String, byte[]> failedImage() {
+    return (imageID) -> {
+      final BufferedImage image = failedBufferedImage().apply(imageID);
+
       try {
         // Write the image to a buffer
         ByteArrayOutputStream imagebuffer = new ByteArrayOutputStream();
         ImageIO.write(image, "jpg", imagebuffer);
-
         // Return a stream from the buffer
         return imagebuffer.toByteArray();
       } catch (IOException e) {
