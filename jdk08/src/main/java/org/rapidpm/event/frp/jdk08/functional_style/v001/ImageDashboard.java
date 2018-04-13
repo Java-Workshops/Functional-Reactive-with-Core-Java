@@ -4,15 +4,11 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.rapidpm.dependencies.core.logger.HasLogger;
-import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.emboss.EmbossFilter;
-import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.gray.GrayScaleFilter;
-import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.points.PointsFilter;
-import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.resize.ResizeFilter;
-import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.rotate.Rotate45DegreeFilter;
 
 import java.io.ByteArrayInputStream;
 
 import static org.rapidpm.event.frp.jdk08.functional_style.v001.ImageFunctions.*;
+import static org.rapidpm.event.frp.jdk08.functional_style.v001.filter.FilterFunctions.*;
 
 
 public class ImageDashboard extends Composite implements HasLogger {
@@ -68,36 +64,43 @@ public class ImageDashboard extends Composite implements HasLogger {
       image.setStreamRessoure(streamResource1);
 
 
-      final ResizeFilter resizeFilter = new ResizeFilter();
-      resizeFilter.setPercentage(info.getSize()
-                                     .replace("%",
-                                              ""
-                                     ));
-      resizedImageBytes = resizeFilter.workOn(bytes);
+      String percentage = info.getSize()
+                              .replace("%",
+                                       ""
+                              );
+      double scale = (percentage.equals("100"))
+                     ? 1
+                     : (percentage.equals("50"))
+                       ? 0.5
+                       : (percentage.equals("25"))
+                         ? 0.25
+                         : 1;
+
+      resizedImageBytes = resize().apply(scale, bytes);
+
       final ImagePanel imagePanelResized = createImagePanel(resizedImageBytes, "thumbnail");
       layoutResults.addComponent(imagePanelResized);
 
-
       // emboss
       if (info.getFilterEmboss()) {
-        EmbossFilter embossFilter = new EmbossFilter();
-        embossImageBytes = embossFilter.workOn(resizedImageBytes);
+        embossImageBytes = emboss().apply(resizedImageBytes);
         final ImagePanel imagePanelEmboss = createImagePanel(embossImageBytes, "emboss");
         layoutResults.addComponent(imagePanelEmboss);
       }
 
       // grayscale
       if (info.getFilterGrayscale()) {
-        final GrayScaleFilter grayScaleFilter = new GrayScaleFilter();
-        grayImageBytes = grayScaleFilter.workOn(resizedImageBytes);
+        grayImageBytes = grayscale().apply(resizedImageBytes);
         final ImagePanel imagePanelGrayscale = createImagePanel(grayImageBytes, "grayscale");
         layoutResults.addComponent(imagePanelGrayscale);
       }
 
       //points
       if (info.getFilterPointerize()) {
-        PointsFilter pointsFilter = new PointsFilter();
-        pointsImageBytes = pointsFilter.workOn((info.getFilterGrayscale()) ? grayImageBytes : resizedImageBytes);
+        pointsImageBytes = points()
+            .apply((info.getFilterGrayscale())
+                   ? grayImageBytes
+                   : resizedImageBytes);
         final ImagePanel imagePanelPoints = createImagePanel(pointsImageBytes, "points");
         layoutResults.addComponent(imagePanelPoints);
       }
@@ -119,8 +122,8 @@ public class ImageDashboard extends Composite implements HasLogger {
             toUse = resizedImageBytes;
           }
         }
-        Rotate45DegreeFilter rotate45DegreeFilter = new Rotate45DegreeFilter();
-        rotatedImageBytes = rotate45DegreeFilter.workOn(toUse);
+
+        rotatedImageBytes = rotate45Degree().apply(toUse);
         final ImagePanel imagePanelRotated = createImagePanel(rotatedImageBytes, "rotated");
         layoutResults.addComponent(imagePanelRotated);
       }
