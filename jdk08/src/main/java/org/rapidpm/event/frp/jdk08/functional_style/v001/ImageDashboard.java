@@ -73,33 +73,33 @@ public class ImageDashboard extends Composite implements HasLogger {
 
       layoutResults.addComponent(imagePanel().apply(resizedImageBytes, "thumbnail"));
 
-      if (info.getFilterEmboss()) {
+      if (info.isFilterEmboss()) {
         layoutResults.addComponent(imagePanel().apply(emboss().apply(resizedImageBytes), "emboss"));
       }
 
-      if (info.getFilterGrayscale()) {
+      if (info.isFilterGrayscale()) {
         grayImageBytes = grayscale().apply(resizedImageBytes);
         layoutResults.addComponent(imagePanel().apply(grayImageBytes, "grayscale"));
       }
 
-      if (info.getFilterPointerize()) {
+      if (info.isFilterPointerize()) {
         pointsImageBytes = points()
-            .apply((info.getFilterGrayscale())
+            .apply((info.isFilterGrayscale())
                    ? grayImageBytes
                    : resizedImageBytes);
         layoutResults.addComponent(imagePanel().apply(pointsImageBytes, "points"));
       }
 
-      if (info.getFilterRotate()) {
+      if (info.isFilterRotate()) {
         byte[] toUse;
-        if (info.getFilterGrayscale()) {
-          if (info.getFilterPointerize()) {
+        if (info.isFilterGrayscale()) {
+          if (info.isFilterPointerize()) {
             toUse = pointsImageBytes;
           } else {
             toUse = grayImageBytes;
           }
         } else {
-          if (info.getFilterPointerize()) {
+          if (info.isFilterPointerize()) {
             toUse = pointsImageBytes;
           } else {
             toUse = resizedImageBytes;

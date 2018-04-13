@@ -2,6 +2,7 @@ package org.rapidpm.event.frp.jdk08.functional_style.v001;
 
 import com.vaadin.ui.*;
 import org.rapidpm.dependencies.core.logger.HasLogger;
+import org.rapidpm.frp.model.serial.Sext;
 
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,7 @@ public class FilterCheckBox extends Composite implements HasLogger {
     panel.setCaption("Filter Tool Box");
 
     List<String> filenameList = IntStream
-        .rangeClosed(1,23 )
+        .rangeClosed(1, 23)
         .mapToObj(id -> formatID().andThen(filename()).apply(id))
         .collect(Collectors.toList());
 
@@ -117,14 +118,7 @@ public class FilterCheckBox extends Composite implements HasLogger {
     boolean remove();
   }
 
-  public static class Info {
-
-    private String  filename;
-    private String  size;
-    private Boolean filterEmboss;
-    private Boolean filterGrayscale;
-    private Boolean filterPointerize;
-    private Boolean filterRotate;
+  public static class Info extends Sext<String, String, Boolean, Boolean, Boolean, Boolean> {
 
     public Info(
         String filename,
@@ -133,36 +127,31 @@ public class FilterCheckBox extends Composite implements HasLogger {
         Boolean filterGrayscale,
         Boolean filterPointerize,
         Boolean filterRotate) {
-      this.filename = filename;
-      this.size = size;
-      this.filterEmboss = filterEmboss;
-      this.filterGrayscale = filterGrayscale;
-      this.filterPointerize = filterPointerize;
-      this.filterRotate = filterRotate;
+      super(filename, size, filterEmboss, filterGrayscale, filterPointerize, filterRotate);
     }
 
     public String getFilename() {
-      return filename;
+      return getT1();
     }
 
     public String getSize() {
-      return size;
+      return getT2();
     }
 
-    public Boolean getFilterEmboss() {
-      return filterEmboss;
+    public Boolean isFilterEmboss() {
+      return getT3();
     }
 
-    public Boolean getFilterGrayscale() {
-      return filterGrayscale;
+    public Boolean isFilterGrayscale() {
+      return getT4();
     }
 
-    public Boolean getFilterPointerize() {
-      return filterPointerize;
+    public Boolean isFilterPointerize() {
+      return getT5();
     }
 
-    public Boolean getFilterRotate() {
-      return filterRotate;
+    public Boolean isFilterRotate() {
+      return getT6();
     }
   }
 
