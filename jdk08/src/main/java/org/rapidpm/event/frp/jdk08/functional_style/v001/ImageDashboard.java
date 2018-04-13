@@ -33,11 +33,10 @@ public class ImageDashboard extends Composite implements HasLogger {
   private void postConstruct() {
 
     StreamResource streamResource = nextImageName()
-        .andThen(imageAsStreamRessouce())
+        .andThen(imageAsStreamResourceNoCache())
         .apply(23);
-
-    streamResource.setCacheTime(0);
-    image.setStreamRessoure(streamResource);
+//
+    image.setStreamResoure(streamResource);
 
     ((HorizontalLayout) layoutOrig).setExpandRatio(image, 1);
 
@@ -52,16 +51,11 @@ public class ImageDashboard extends Composite implements HasLogger {
 
       byte[] bytes             = readImageWithIdAsBytes().apply(info.getFilename());
       byte[] resizedImageBytes = new byte[0];
-      byte[] embossImageBytes  = new byte[0];
       byte[] grayImageBytes    = new byte[0];
       byte[] pointsImageBytes  = new byte[0];
       byte[] rotatedImageBytes = new byte[0];
 
-
-      StreamResource streamResource1 = imageAsStreamRessouce().apply(info.getFilename());
-      streamResource1.setCacheTime(0);
-      image.setStreamRessoure(streamResource1);
-
+      image.setStreamResoure(imageAsStreamResourceNoCache().apply(info.getFilename()));
 
       String percentage = info.getSize()
                               .replace("%",
@@ -79,21 +73,15 @@ public class ImageDashboard extends Composite implements HasLogger {
 
       layoutResults.addComponent(imagePanel().apply(resizedImageBytes, "thumbnail"));
 
-      // emboss
       if (info.getFilterEmboss()) {
-        embossImageBytes = emboss().apply(resizedImageBytes);
-
-        layoutResults.addComponent(imagePanel().apply(embossImageBytes, "emboss"));
+        layoutResults.addComponent(imagePanel().apply(emboss().apply(resizedImageBytes), "emboss"));
       }
 
-      // grayscale
       if (info.getFilterGrayscale()) {
         grayImageBytes = grayscale().apply(resizedImageBytes);
-
         layoutResults.addComponent(imagePanel().apply(grayImageBytes, "grayscale"));
       }
 
-      //points
       if (info.getFilterPointerize()) {
         pointsImageBytes = points()
             .apply((info.getFilterGrayscale())
@@ -101,8 +89,6 @@ public class ImageDashboard extends Composite implements HasLogger {
                    : resizedImageBytes);
         layoutResults.addComponent(imagePanel().apply(pointsImageBytes, "points"));
       }
-
-      // rotate
 
       if (info.getFilterRotate()) {
         byte[] toUse;

@@ -19,10 +19,18 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 public interface ImageFunctions {
 
 
-  static Function<String, StreamResource> imageAsStreamRessouce() {
+  static Function<String, StreamResource> imageAsStreamResource() {
     return (nextImageName) -> readImageWithIdAsBytes()
         .andThen(image -> toStreamResource().apply(image, nextImageName))
         .apply(nextImageName);
+  }
+
+  static Function<String, StreamResource> imageAsStreamResourceNoCache() {
+    return (nextImageName) -> {
+      StreamResource sr = imageAsStreamResource().apply(nextImageName);
+      sr.setCacheTime(0);
+      return sr;
+    };
   }
 
   static BiFunction<byte[], String, StreamResource> toStreamResource() {
@@ -30,6 +38,15 @@ public interface ImageFunctions {
                                                    filename
     );
   }
+
+  static BiFunction<byte[], String, StreamResource> toStreamResourceNoCache() {
+    return (input, filename) -> {
+      StreamResource streamResource = toStreamResource().apply(input, filename);
+      streamResource.setCacheTime(0);
+      return streamResource;
+    };
+  }
+
 
   static Function<String, byte[]> readImageWithIdAsBytes() {
     return (nextImageName) -> {
