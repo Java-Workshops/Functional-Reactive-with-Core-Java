@@ -5,10 +5,10 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.rapidpm.dependencies.core.logger.HasLogger;
 
-import java.io.ByteArrayInputStream;
+import java.util.function.BiFunction;
 
+import static org.rapidpm.event.frp.jdk08.functional_style.v001.FilterFunctions.*;
 import static org.rapidpm.event.frp.jdk08.functional_style.v001.ImageFunctions.*;
-import static org.rapidpm.event.frp.jdk08.functional_style.v001.filter.FilterFunctions.*;
 
 
 public class ImageDashboard extends Composite implements HasLogger {
@@ -78,21 +78,20 @@ public class ImageDashboard extends Composite implements HasLogger {
 
       resizedImageBytes = resize().apply(scale, bytes);
 
-      final ImagePanel imagePanelResized = createImagePanel(resizedImageBytes, "thumbnail");
-      layoutResults.addComponent(imagePanelResized);
+      layoutResults.addComponent(imagePanel().apply(resizedImageBytes, "thumbnail"));
 
       // emboss
       if (info.getFilterEmboss()) {
         embossImageBytes = emboss().apply(resizedImageBytes);
-        final ImagePanel imagePanelEmboss = createImagePanel(embossImageBytes, "emboss");
-        layoutResults.addComponent(imagePanelEmboss);
+
+        layoutResults.addComponent(imagePanel().apply(embossImageBytes, "emboss"));
       }
 
       // grayscale
       if (info.getFilterGrayscale()) {
         grayImageBytes = grayscale().apply(resizedImageBytes);
-        final ImagePanel imagePanelGrayscale = createImagePanel(grayImageBytes, "grayscale");
-        layoutResults.addComponent(imagePanelGrayscale);
+
+        layoutResults.addComponent(imagePanel().apply(grayImageBytes, "grayscale"));
       }
 
       //points
@@ -101,8 +100,7 @@ public class ImageDashboard extends Composite implements HasLogger {
             .apply((info.getFilterGrayscale())
                    ? grayImageBytes
                    : resizedImageBytes);
-        final ImagePanel imagePanelPoints = createImagePanel(pointsImageBytes, "points");
-        layoutResults.addComponent(imagePanelPoints);
+        layoutResults.addComponent(imagePanel().apply(pointsImageBytes, "points"));
       }
 
       // rotate
@@ -124,24 +122,23 @@ public class ImageDashboard extends Composite implements HasLogger {
         }
 
         rotatedImageBytes = rotate45Degree().apply(toUse);
-        final ImagePanel imagePanelRotated = createImagePanel(rotatedImageBytes, "rotated");
-        layoutResults.addComponent(imagePanelRotated);
+
+        layoutResults.addComponent(imagePanel().apply(rotatedImageBytes, "rotated"));
       }
     });
   }
 
-  private ImagePanel createImagePanel(byte[] input, String name) {
-    final StreamResource streamResourceThumb = new StreamResource(
-        (StreamResource.StreamSource) () -> new ByteArrayInputStream(input),
-        name + " - thumb"
-    );
-    streamResourceThumb.setCacheTime(0);
-
-    final ImagePanel imagePanel = new ImagePanel();
-    imagePanel.setCaption(name);
-    imagePanel.setStreamRessoure(streamResourceThumb);
-    return imagePanel;
+  private BiFunction<byte[], String, ImagePanel> imagePanel() {
+    return (image, name) -> {
+      StreamResource streamResource = toStreamResource().apply(image, name);
+      streamResource.setCacheTime(0);
+      final ImagePanel imagePanel = new ImagePanel();
+      imagePanel.setCaption(name);
+      imagePanel.setStreamRessoure(streamResource);
+      return imagePanel;
+    };
   }
+
 
   @Override
   public void detach() {

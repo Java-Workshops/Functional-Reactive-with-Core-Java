@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.lang.String.format;
@@ -20,11 +21,14 @@ public interface ImageFunctions {
 
   static Function<String, StreamResource> imageAsStreamRessouce() {
     return (nextImageName) -> readImageWithIdAsBytes()
-        .andThen(bytes -> new StreamResource(
-            (StreamResource.StreamSource) () -> new ByteArrayInputStream(bytes),
-            nextImageName
-        ))
+        .andThen(image -> toStreamResource().apply(image, nextImageName))
         .apply(nextImageName);
+  }
+
+  static BiFunction<byte[], String, StreamResource> toStreamResource() {
+    return (input, filename) -> new StreamResource((StreamResource.StreamSource) () -> new ByteArrayInputStream(input),
+                                                   filename
+    );
   }
 
   static Function<String, byte[]> readImageWithIdAsBytes() {

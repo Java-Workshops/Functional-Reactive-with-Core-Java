@@ -1,4 +1,4 @@
-package org.rapidpm.event.frp.jdk08.functional_style.v001.filter;
+package org.rapidpm.event.frp.jdk08.functional_style.v001;
 
 import com.jhlabs.image.*;
 
