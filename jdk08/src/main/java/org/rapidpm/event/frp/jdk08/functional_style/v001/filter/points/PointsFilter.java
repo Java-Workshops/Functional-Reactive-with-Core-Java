@@ -6,8 +6,9 @@ import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.Filter;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import static org.rapidpm.event.frp.jdk08.functional_style.v001.filter.FilterFunctions.toByteArray;
 
 public class PointsFilter implements Filter {
   @Override
@@ -18,13 +19,7 @@ public class PointsFilter implements Filter {
 
       final PointillizeFilter filter = new PointillizeFilter();
       filter.setScale(4.0f);
-
-      BufferedImage resultBufferedImage = filter.filter(image, null);
-
-      ByteArrayOutputStream os = new ByteArrayOutputStream();
-      ImageIO.write(resultBufferedImage, "jpeg", os);
-      byte[] result = os.toByteArray();
-      return result;
+      return toByteArray().apply(filter.filter(image, null));
 
     } catch (IOException e) {
       e.printStackTrace();

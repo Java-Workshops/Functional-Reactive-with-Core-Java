@@ -6,8 +6,9 @@ import org.rapidpm.event.frp.jdk08.functional_style.v001.filter.Filter;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import static org.rapidpm.event.frp.jdk08.functional_style.v001.filter.FilterFunctions.toByteArray;
 
 public class ResizeFilter implements Filter {
 
@@ -27,7 +28,6 @@ public class ResizeFilter implements Filter {
   public byte[] workOn(byte[] input) {
 
     try {
-//      final BufferedImage image = Imaging.getBufferedImage(input);
       final BufferedImage image = ImageIO.read(new ByteArrayInputStream(input));
       double              p     = percentage(percentage);
 
@@ -35,19 +35,12 @@ public class ResizeFilter implements Filter {
                                                  (int) (image.getHeight() * p)
       );
 
-      BufferedImage resultBufferedImage = filter.filter(image, null);
-
-      ByteArrayOutputStream os = new ByteArrayOutputStream();
-      ImageIO.write(resultBufferedImage, "jpeg", os);
-      byte[] result = os.toByteArray();
-      return result;
-
+      return toByteArray().apply(filter.filter(image, null));
     } catch (IOException e) {
       e.printStackTrace();
+      return new byte[0];
     }
 
-
-    return new byte[0];
   }
 
 
