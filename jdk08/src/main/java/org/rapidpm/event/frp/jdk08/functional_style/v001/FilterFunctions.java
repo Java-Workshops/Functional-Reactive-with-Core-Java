@@ -98,6 +98,10 @@ public interface FilterFunctions {
   }
 
 
+  static Function<Double, Function<byte[], byte[]>> resizeCurried() {
+    return a -> b -> resize().apply(a, b);
+  }
+
   static BiFunction<Double, byte[], byte[]> resize() {
     return (scale, input) -> {
 

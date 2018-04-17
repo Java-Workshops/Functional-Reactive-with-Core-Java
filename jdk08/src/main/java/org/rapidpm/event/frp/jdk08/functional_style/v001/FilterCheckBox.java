@@ -74,7 +74,6 @@ public class FilterCheckBox extends Composite implements HasLogger {
     filterRotate.setCaption("Rotate 45");
     filterRotate.setValue(false);
 
-
     sizePercentage.setItems("100%", "50%", "25%");
     sizePercentage.setPlaceholder("select the size..");
 

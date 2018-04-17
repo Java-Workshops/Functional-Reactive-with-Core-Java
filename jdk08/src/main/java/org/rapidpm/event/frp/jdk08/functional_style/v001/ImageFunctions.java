@@ -1,6 +1,10 @@
 package org.rapidpm.event.frp.jdk08.functional_style.v001;
 
 import com.vaadin.server.StreamResource;
+import org.rapidpm.frp.functions.CheckedFunction;
+import org.rapidpm.frp.memoizer.Memoizer;
+import org.rapidpm.frp.model.Pair;
+import org.rapidpm.frp.model.Result;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,7 +13,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.lang.String.format;
@@ -18,48 +21,19 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 
 public interface ImageFunctions {
 
-
-  static Function<String, StreamResource> imageAsStreamResource() {
-    return (nextImageName) -> readImageWithIdAsBytes()
-        .andThen(image -> toStreamResource().apply(image, nextImageName))
-        .apply(nextImageName);
+  static Function<Pair<String, byte[]>, Result<StreamResource>> toStreamResource() {
+    return (CheckedFunction<Pair<String, byte[]>, StreamResource>) input -> new StreamResource(
+        (StreamResource.StreamSource) () -> new ByteArrayInputStream(input.getT2()), input.getT1());
   }
 
-  static Function<String, StreamResource> imageAsStreamResourceNoCache() {
-    return (nextImageName) -> {
-      StreamResource sr = imageAsStreamResource().apply(nextImageName);
-      sr.setCacheTime(0);
-      return sr;
-    };
+  static Function<Pair<String, byte[]>, Result<StreamResource>> toStreamResourceNoCache() {
+    return (input) -> toStreamResource()
+        .andThen(r -> r.ifPresent(s -> s.setCacheTime(0)))
+        .apply(input);
   }
 
-  static BiFunction<byte[], String, StreamResource> toStreamResource() {
-    return (input, filename) -> new StreamResource((StreamResource.StreamSource) () -> new ByteArrayInputStream(input),
-                                                   filename
-    );
-  }
-
-  static BiFunction<byte[], String, StreamResource> toStreamResourceNoCache() {
-    return (input, filename) -> {
-      StreamResource streamResource = toStreamResource().apply(input, filename);
-      streamResource.setCacheTime(0);
-      return streamResource;
-    };
-  }
-
-
-  static Function<String, byte[]> readImageWithIdAsBytes() {
-    return (nextImageName) -> {
-      try {
-        return readAllBytes(
-            new File("./",
-                     "_data/_images/_jpeg/_1024px/" + nextImageName
-            ).toPath()
-        );
-      } catch (IOException e) {
-        return failedImage().apply(nextImageName);
-      }
-    };
+  static Function<Integer, String> nextImageNameMemoized() {
+    return Memoizer.memoize(nextImageName());
   }
 
   static Function<Integer, String> nextImageName() {
@@ -78,6 +52,30 @@ public interface ImageFunctions {
 
   static Function<String, String> filename() {
     return (id) -> id + "_1024px.jpg";
+  }
+
+
+  static Function<String, Result<Pair<String, byte[]>>> readImageWithIdAsBytesMemoized() {
+    return Memoizer.memoize(readImageWithIdAsBytes());
+  }
+
+  static Function<String, Result<Pair<String, byte[]>>> readImageWithIdAsBytes() {
+    return (CheckedFunction<String, Pair<String, byte[]>>) nextImageName -> {
+      byte[] bytes = readAllBytes(
+          new File("./",
+                   "_data/_images/_jpeg/_1024px/" + nextImageName
+          ).toPath()
+      );
+      return Pair.next(nextImageName, bytes);
+    };
+  }
+
+  static Function<String, Pair<String, byte[]>> loadOrigOrFailedImg() {
+    return (imgName) -> readImageWithIdAsBytes()
+        .andThen(r -> r.getOrElse(() -> Pair.next(imgName,
+                                                  failedImage().apply("failed " + imgName)
+        )))
+        .apply(imgName);
   }
 
 
