@@ -53,10 +53,9 @@
   </licenses>
 
   <properties>
-    <!--
       <maven.compiler.target>9</maven.compiler.target>
       <maven.compiler.source>9</maven.compiler.source>
-      -->
+    <!-- -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -69,9 +68,71 @@
     <pitest-junit5-plugin.version>0.4</pitest-junit5-plugin.version>
     <pitest-prod-classes>org.rapidpm.*</pitest-prod-classes>
     <pitest-test-classes>junit.org.rapidpm*</pitest-test-classes>
+
+    <vaadin.version>8.3.3</vaadin.version>
+    <rapidpm-dependencies.version>3.5.8</rapidpm-dependencies.version>
+    <undertow.version>2.0.4.Final</undertow.version>
+    <rapidpm-functional-reactive.version>0.5.2</rapidpm-functional-reactive.version>
+
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <!--Vaadin -->
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-bom</artifactId>
+        <version>${vaadin.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+    <!--Basic stuff-->
+    <dependency>
+      <groupId>org.rapidpm</groupId>
+      <artifactId>rapidpm-dependencies-core-logger</artifactId>
+      <version>${rapidpm-dependencies.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rapidpm</groupId>
+      <artifactId>rapidpm-functional-reactive</artifactId>
+      <version>${rapidpm-functional-reactive.version}</version>
+    </dependency>
+
+    <!--Infrastructure-->
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-core</artifactId>
+      <version>${undertow.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-servlet</artifactId>
+      <version>${undertow.version}</version>
+    </dependency>
+
+
+    <!--Vaadin -->
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-themes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-client-compiled</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-push</artifactId>
+    </dependency>
     <!--TDD with jUNit5-->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

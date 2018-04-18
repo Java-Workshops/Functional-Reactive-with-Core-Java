@@ -48,6 +48,8 @@ public class ImageDashboard extends Composite implements HasLogger {
     registration = filterCheckBox.register(info -> {
       layoutResults.removeAllComponents();
 
+
+      // the CPU intensive part inside the UI - Thread
       IntStream
           .range(1, info.getAmount())
           .mapToObj(i -> readImageWithIdAsBytes(fileName(i)))
